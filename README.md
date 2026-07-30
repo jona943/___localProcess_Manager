@@ -1,126 +1,80 @@
-# localProcess_Manager
+# <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original.svg" width="35" height="35" valign="middle" /> localProcess_Manager — Arquitectura Didáctica para Agentes de IA en CLI
 
-**localProcess_Manager** es un entorno modular y estructurado diseñado para estandarizar y optimizar el flujo de trabajo colaborativo entre desarrolladores de software y agentes de Inteligencia Artificial (IA) en entornos CLI (línea de comandos) y terminales.
+[![Runtime - Node.js](https://img.shields.io/badge/Runtime-Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)](#)
+[![Format - Markdown & JSON](https://img.shields.io/badge/Format-Markdown_%26_JSON-000000?style=for-the-badge&logo=markdown&logoColor=white)](#)
+[![Category - AI CLI & Workflow](https://img.shields.io/badge/Category-AI_CLI_%26_Workflow-0052CC?style=for-the-badge&logo=gnu-bash&logoColor=white)](#)
+[![License - MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge&logo=open-source-initiative&logoColor=white)](#)
 
----
-
-## 🎯 Propósito del Repositorio
-El propósito principal de este repositorio es proporcionar una arquitectura estandarizada que permita a cualquier programador interactuar con asistentes de IA de manera predecible, ordenada y eficiente, manteniendo un control absoluto sobre el código y maximizando el contexto disponible para el modelo.
-
----
-
-## 💡 ¿Qué Resuelve?
-Al trabajar con agentes de IA autónomos o semiautónomos en desarrollo, es común enfrentarse a varios problemas recurrentes. **localProcess_Manager** los resuelve de la siguiente forma:
-
-1. **Pérdida de Contexto:** Al aislar el espacio operativo y definir directorios de entrada/salida temporales, evita que la IA acumule logs de terminal masivos innecesarios en su ventana de contexto.
-2. **Configuración Acoplada:** Separa las preferencias personales del programador (tono, didáctica, idioma del agente) de las especificaciones y estándares técnicos del código fuente del proyecto (frameworks, metodologías, CSS).
-3. **Pérdida de Aprendizajes Clave:** Mediante un módulo dedicado a la persistencia (`ai-memory/`), el agente recuerda de manera indefinida las correcciones hechas por el desarrollador y las lecciones aprendidas en sesiones anteriores.
-4. **Modificación de Código No Solicitada (Regla de Oro):** Implementa reglas de sistema estrictas para que la IA actúe como un tutor/guía didáctico y no modifique ni autocomplete archivos directamente a menos que el usuario lo pida explícitamente, favoreciendo el aprendizaje y la revisión.
+**localProcess_Manager** es un entorno modular y estructurado diseñado para estandarizar y optimizar el flujo de trabajo colaborativo entre desarrolladores de software y agentes de Inteligencia Artificial (IA) en entornos de línea de comandos (CLI) y terminales.
 
 ---
 
-## 🏗️ Arquitectura del Repositorio
+## <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/chrome/chrome-original.svg" width="22" height="22" valign="middle" /> Propósito del Repositorio
 
-```plaintext
+Proporcionar una arquitectura estandarizada que permita a cualquier desarrollador interactuar con asistentes de IA de manera predecible, ordenada y eficiente, manteniendo un control absoluto sobre la base de código y maximizando la ventana de contexto disponible para el modelo.
+
+---
+
+## <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/vscode/vscode-original.svg" width="22" height="22" valign="middle" /> Problemas que Resuelve
+
+1. **Pérdida de Contexto**: Aislando los archivos temporales de entrada y salida (`workspace/`), evitando que la terminal acumule registros innecesarios.
+2. **Configuración Desacoplada**: Separa las preferencias personales del programador (tono, didáctica, idioma) de los estándares técnicos del proyecto (stack, frameworks, CSS).
+3. **Persistencia de Memoria**: Un módulo dedicado (`ai-memory/`) permite al agente recordar de forma indefinida las correcciones hechas por el desarrollador y las lecciones aprendidas entre sesiones.
+4. **Modificación Didáctica Supervisada**: Reglas estrictas para que la IA actúe como tutor y no altere archivos directamente sin aprobación previa del usuario.
+
+---
+
+## <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/git/git-original.svg" width="22" height="22" valign="middle" /> Estructura del Repositorio
+
+```text
 localProcess_Manager/
-├── README.md                     # Esta guía de uso y documentación
-├── LICENSE                       # Licencia de código abierto MIT en español
+├── README.md                     # Guía de uso y documentación principal
+├── LICENSE                       # Licencia MIT de código abierto en español
 ├── control_checkpoints.md        # Registro y control del estado del entorno
-├── prompt.md                     # System Prompt compilado y listo para alimentar a la IA
+├── prompt.md                     # System Prompt compilado inyectable a la IA
 ├── user-config/                  # Configuración modular desacoplada
-│   ├── 1.developer-config.md     # Ajustes del programador (Nombre, tono, idioma, nivel de didáctica)
-│   └── 2.project-config.md       # Estándares del proyecto (Stack, directorios, CSS, asincronía)
+│   ├── 1.developer-config.md     # Ajustes del desarrollador (Tono, idioma, didáctica)
+│   └── 2.project-config.md       # Estándares técnicos del proyecto (Stack, directorios, CSS)
 ├── ai-memory/                    # Memoria persistente del agente
 │   ├── perfil_usuario.md         # Preferencias y perfil del programador
-│   ├── aprendizajes_clave.md     # Lecciones aprendidas y reglas corregidas a recordar
+│   ├── aprendizajes_clave.md     # Lecciones aprendidas y reglas a recordar
 │   └── bitacora_tareas.md        # Historial de tareas completadas
 ├── workspace/                    # Espacio operativo temporal
-│   ├── inputs/                   # Fragmentos de código, archivos o documentación que subes a la IA
-│   └── outputs/                  # Borradores, análisis o reportes que la IA genera antes de ser aplicados
-└── tools/                        # Compilador y capacidades del agente
-    ├── esquema_funciones.json    # JSON con el esquema de herramientas/funciones disponibles (Function Calling)
-    └── compilar_prompt.js        # Script Node.js encargado de unir las configuraciones en prompt.md
+│   ├── inputs/                   # Fragmentos de código, archivos o documentación para la IA
+│   └── outputs/                  # Borradores o reportes que genera la IA antes de aplicarlos
+└── tools/                        # Compilador y herramientas
+    ├── esquema_funciones.json    # Esquema JSON de herramientas (Function Calling)
+    └── compilar_prompt.js        # Script Node.js para compilar prompt.md
 ```
 
 ---
 
-## 🛠️ Tecnologías Utilizadas
-- **Node.js:** Motor ejecutor del compilador del prompt base.
-- **Markdown:** Utilizado para almacenar configuraciones legibles, documentación de contexto y la persistencia de memoria.
-- **JSON / JSON Schema:** Estructuración de herramientas locales e integración con modelos mediante Function Calling.
+## <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/bash/bash-original.svg" width="22" height="22" valign="middle" /> Flujo de Uso e Inicialización
 
----
+### 1. Inicialización Guiada (Un Solo Uso)
+Puedes automatizar tu configuración inicial copiando el contenido de [`___ignore-prompt.md`](./___ignore-prompt.md) y pegándolo en tu primer chat con el agente de IA para responder un cuestionario interactivo que generará tus archivos en `user-config/` y `ai-memory/`.
 
-## 🚀 Inicialización Rápida y Personalización (Un Solo Uso)
+### 2. Configuración Manual y Compilación
+Edita tus preferencias en [`user-config/1.developer-config.md`](./user-config/1.developer-config.md) y [`user-config/2.project-config.md`](./user-config/2.project-config.md). Luego compila el prompt ejecutando:
 
-Si es la primera vez que utilizas este entorno, puedes automatizar tu configuración inicial con la ayuda de tu agente de IA usando el archivo [___ignore-prompt.md](file:///home/dev-jonathan/Escritorio/entorno-prueba/LocalDrop/___localProcess_Manager/___ignore-prompt.md):
-
-1. **Inicia el chat** con tu agente de IA preferido en este entorno.
-2. **Copia el contenido completo** de [___ignore-prompt.md](file:///home/dev-jonathan/Escritorio/entorno-prueba/LocalDrop/___localProcess_Manager/___ignore-prompt.md) y pégalo en el chat.
-3. El agente de IA **iniciará un flujo de preguntas interactivas** sobre tus preferencias, perfil de desarrollador, stack tecnológico, configuración de estilos, base de datos y detalles del proyecto.
-4. Tras recopilar las respuestas, el agente **escribirá y estructurará automáticamente** los datos necesarios en:
-   - `user-config/1.developer-config.md`
-   - `user-config/2.project-config.md`
-   - Los archivos correspondientes dentro de `ai-memory/`
-5. **Compilación automática**: Al finalizar el proceso, el agente compilará el prompt base ejecutando el script del compilador.
-6. **Modificación Manual**: Recuerda que puedes modificar cualquiera de estos archivos manualmente en cualquier momento si tus preferencias o requerimientos cambian.
-
-> [!IMPORTANT]
-> **REGLA DE SEGURIDAD PARA EL AGENTE:** El agente de IA **NUNCA** puede leer, invocar o ejecutar el archivo `___ignore-prompt.md` por su cuenta de forma autónoma. Es un archivo puramente demostrativo y de un solo uso para que el usuario interactúe mediante copiar y pegar al inicio de su primera sesión.
-
----
-
-## 🚀 ¿Cómo Empezar y Correrlo?
-
-### 1. Clonar el repositorio
-Clona esta estructura en el mismo directorio donde tengas tus repositorios de desarrollo locales.
-
-### 2. Configurar tus Preferencias
-Si no deseas utilizar el asistente de inicialización interactiva, puedes editar manualmente las tablas Markdown en los archivos correspondientes dentro de `user-config/`:
-- Configura tu nombre, el acento/personalidad de tu agente y el estilo de ayuda en [1.developer-config.md](file:///home/dev-jonathan/Escritorio/entorno-prueba/LocalDrop/___localProcess_Manager/user-config/1.developer-config.md).
-- Configura la ruta local, el archivo de contexto y los estándares técnicos de tu proyecto en [2.project-config.md](file:///home/dev-jonathan/Escritorio/entorno-prueba/LocalDrop/___localProcess_Manager/user-config/2.project-config.md).
-
-### 3. Compilar el Prompt
-Una vez que hayas modificado las tablas de configuración, compila el archivo final de instrucciones ejecutando en tu consola:
 ```bash
 node tools/compilar_prompt.js
 ```
-Esto generará o actualizará automáticamente el archivo [prompt.md](file:///home/dev-jonathan/Escritorio/entorno-prueba/LocalDrop/___localProcess_Manager/prompt.md) con las variables inyectadas.
 
-### 4. Inicializar tu Agente
-Puedes inicializar tu asistente de inteligencia artificial preferido pasándole el prompt compilado e inyectando tu archivo de contexto técnico.
+### 3. Ejecución en CLI
+Usa el archivo compilado [`prompt.md`](./prompt.md) con tu cliente de IA CLI preferido:
 
-*Ejemplo usando Antigravity CLI:*
-```bash
-agy chat --system prompt.md --file [nombre-de-tu-contexto].md
-```
-
-*Ejemplo usando Gemini CLI:*
-```bash
-gemini-cli --system prompt.md --context [nombre-de-tu-contexto].md
-```
+* **Antigravity CLI**:
+  ```bash
+  agy chat --system prompt.md --file [contexto].md
+  ```
+* **Gemini CLI**:
+  ```bash
+  gemini-cli --system prompt.md --context [contexto].md
+  ```
 
 ---
 
-## 💡 Sugerencias y Flujo Recomendado
-
-1. **Uso de Inputs:** En lugar de pegar fragmentos gigantes de código directamente en el chat de la terminal, colócalos en `workspace/inputs/` y dile a la IA: *"Analiza el archivo en `workspace/inputs/controlador.js`"*. Esto mantiene la consola limpia.
-2. **Uso de Outputs:** Solicita a la IA que deposite los resultados de generación de código largos o reportes pesados en `workspace/outputs/`. Así podrás revisarlos y probarlos antes de moverlos de forma manual a tu repositorio principal.
-3. **Memoria y Errores:** Si la IA repite un error o no respeta una preferencia, agrégala en [aprendizajes_clave.md](file:///home/dev-jonathan/Escritorio/entorno-prueba/LocalDrop/___localProcess_Manager/ai-memory/aprendizajes_clave.md). Al inicio de cada sesión de chat, pídele al agente que lea ese archivo para que nunca lo olvide.
-4. **Clonación Interna y `.gitignore` (Control de Proyectos Existentes):** Para un control más directo sobre un proyecto existente, puedes clonar o mover la carpeta `___localProcess_Manager` directamente dentro de la raíz de dicho proyecto. Para evitar que las bitácoras, inputs, outputs y configuraciones personales de tu IA contaminen el historial de commits del proyecto principal, crea (si no existe) o edita el archivo `.gitignore` de tu proyecto y añade:
-   ```gitignore
-   # Herramientas y memoria local de IA
-   ___localProcess_Manager/
-   ```
-5. **Seguridad y Flujo de Trabajo (Ramas Alternas):** Aunque la IA actúe como un asistente didáctico, **siempre es indispensable revisar críticamente cada cambio propuesto antes de aplicarlo**. Se recomienda encarecidamente **trabajar siempre sobre una rama alterna de Git** (por ejemplo, `feature-desarrollo-ia` o `dev`) en lugar de `main` para realizar pruebas o integraciones. De esta forma, si el agente genera un cambio inesperado, podrás descartarlo fácilmente o auditarlo mediante un `git diff` antes de integrarlo de forma definitiva.
-
----
-
-## 👥 Quién lo Desarrolló
-Este estándar ha sido conceptualizado, desarrollado y mantenido por **Jonathan (dev-jonathan)**, enfocado en estructurar mejores entornos didácticos de desarrollo asistido por Inteligencia Artificial de forma local. ¡Las sugerencias y contribuciones de la comunidad son bienvenidas!
-
----
-
-## 🎁 Extras y Licencia
-- **Contribuciones:** Si tienes sugerencias sobre cómo optimizar la bitácora o quieres proponer scripts alternativos de compilación, siéntete libre de abrir un Pull Request.
-- **Licencia:** Este repositorio se distribuye bajo la licencia **MIT** en español (ver archivo [LICENSE](file:///home/dev-jonathan/Escritorio/entorno-prueba/LocalDrop/___localProcess_Manager/LICENSE)). Eres libre de usarlo, modificarlo y compartirlo para tus propios desarrollos personales o profesionales.
+<p align="center">
+  <sub>localProcess_Manager — AI CLI Architecture & Workflow | Desarrollado por Jonathan Medina</sub>
+</p>
