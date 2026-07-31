@@ -1,6 +1,6 @@
-# <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original.svg" width="35" height="35" valign="middle" /> localProcess_Manager — Arquitectura Didáctica para Agentes de IA en CLI
+# <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" width="35" height="35" valign="middle" /> localProcess_Manager — Arquitectura Didáctica para Agentes de IA en CLI
 
-[![Runtime - Node.js](https://img.shields.io/badge/Runtime-Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)](#)
+[![Runtime - Python](https://img.shields.io/badge/Runtime-Python_3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](#)
 [![Format - Markdown & JSON](https://img.shields.io/badge/Format-Markdown_%26_JSON-000000?style=for-the-badge&logo=markdown&logoColor=white)](#)
 [![Category - AI CLI & Workflow](https://img.shields.io/badge/Category-AI_CLI_%26_Workflow-0052CC?style=for-the-badge&logo=gnu-bash&logoColor=white)](#)
 [![License - MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge&logo=open-source-initiative&logoColor=white)](#)
@@ -20,7 +20,7 @@ Proporcionar una arquitectura estandarizada que permita a cualquier desarrollado
 1. **Pérdida de Contexto**: Aislando los archivos temporales de entrada y salida (`workspace/`), evitando que la terminal acumule registros innecesarios.
 2. **Configuración Desacoplada**: Separa las preferencias personales del programador (tono, didáctica, idioma) de los estándares técnicos del proyecto (stack, frameworks, CSS).
 3. **Persistencia de Memoria**: Un módulo dedicado (`ai-memory/`) permite al agente recordar de forma indefinida las correcciones hechas por el desarrollador y las lecciones aprendidas entre sesiones.
-4. **Modificación Didáctica Supervisada**: Reglas estrictas para que la IA actúe como tutor y no altere archivos directamente sin aprobación previa del usuario.
+4. **Modificación Didáctica Supervisada**: Reglas strictly supervisadas para que la IA actúe como tutor y no altere archivos directamente sin aprobación previa del usuario.
 
 ---
 
@@ -42,9 +42,10 @@ localProcess_Manager/
 ├── workspace/                    # Espacio operativo temporal
 │   ├── inputs/                   # Fragmentos de código, archivos o documentación para la IA
 │   └── outputs/                  # Borradores o reportes que genera la IA antes de aplicarlos
-└── tools/                        # Compilador y herramientas
+└── tools/                        # Compilador y herramientas Python
     ├── esquema_funciones.json    # Esquema JSON de herramientas (Function Calling)
-    └── compilar_prompt.js        # Script Node.js para compilar prompt.md
+    ├── requirements.txt          # Dependencias de Python
+    └── compilar_prompt.py        # Script Python para compilar prompt.md
 ```
 
 ---
@@ -58,7 +59,7 @@ Puedes automatizar tu configuración inicial copiando el contenido de [`___ignor
 Edita tus preferencias en [`user-config/1.developer-config.md`](./user-config/1.developer-config.md) y [`user-config/2.project-config.md`](./user-config/2.project-config.md). Luego compila el prompt ejecutando:
 
 ```bash
-node tools/compilar_prompt.js
+python3 tools/compilar_prompt.py
 ```
 
 ### 3. Ejecución en CLI
@@ -76,5 +77,5 @@ Usa el archivo compilado [`prompt.md`](./prompt.md) con tu cliente de IA CLI pre
 ---
 
 <p align="center">
-  <sub>localProcess_Manager — AI CLI Architecture & Workflow | Desarrollado por Jonathan Medina</sub>
+  <sub>localProcess_Manager — AI CLI Architecture & Workflow 2026 | Desarrollado por Jonathan Medina</sub>
 </p>

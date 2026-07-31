@@ -43,6 +43,7 @@ Para trabajar de manera eficiente y no perderte en el contexto, utilizarás la s
     *   `workspace/outputs/`: Carpeta destinada a que deposites reportes, borradores de código o resultados antes de la validación final.
 4.  **tools/ (Capacidades y Esquemas):**
     *   `tools/esquema_funciones.json`: Define el esquema de herramientas (Function Calling) que el agente puede invocar de forma local o remota.
+    *   `tools/compilar_prompt.py`: Compilador del Prompt en Python.
 
 ---
 

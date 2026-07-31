@@ -48,6 +48,6 @@ Una vez que el usuario responda y valide la información:
    * [ai-memory/perfil_usuario.md](file:///home/dev-jonathan/Escritorio/entorno-prueba/LocalDrop/___localProcess_Manager/ai-memory/perfil_usuario.md) (aquí también actualiza el nombre del desarrollador y la Regla de Oro/personalidad seleccionada)
 2. **Ejecuta el script de compilación**: Corre la herramienta o comando para compilar el prompt:
    ```bash
-   node tools/compilar_prompt.js
+   python3 tools/compilar_prompt.py
    ```
 3. Confirma al usuario que el archivo `prompt.md` ha sido generado exitosamente y que a partir de ese momento, su sesión de chat utilizará la configuración exacta configurada.

@@ -1,0 +1,9 @@
+# localProcess_Manager — Dependencias de Python
+
+# Core & Prompt Compilation
+pydantic>=2.0.0
+markdown>=3.5.0
+
+# MCP & Memory Engine (Próxima Fase)
+mcp>=1.0.0
+sqlite-vec>=0.1.0

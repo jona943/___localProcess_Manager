@@ -41,9 +41,9 @@ Este documento sirve para realizar el seguimiento del proceso de estandarizació
   - [x] Rellenar `user-config/1.developer-config.md` con la tabla de preferencias del desarrollador (usuario).
   - [x] Rellenar `user-config/2.project-config.md` con la tabla de requisitos y metadatos del proyecto.
 
-- [x] **9. Desarrollar el Compilador del Prompt (`tools/compilar_prompt.js`)**
-  - [x] Desarrollar un script en Node.js que lea y parsee las tablas de configuración.
+- [x] **9. Desarrollar el Compilador del Prompt (`tools/compilar_prompt.py`)**
+  - [x] Desarrollar un script en Python 3 que lea y parsee las tablas de configuración.
   - [x] Generar un archivo `prompt.md` personalizado a partir de las configuraciones y una plantilla base.
 
 - [x] **10. Probar el Generador**
-  - [x] Ejecutar el script y comprobar que `prompt.md` se actualice correctamente con las preferencias.
+  - [x] Ejecutar el script `python3 tools/compilar_prompt.py` y comprobar que `prompt.md` se actualice correctamente con las preferencias.
