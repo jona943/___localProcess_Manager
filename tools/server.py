@@ -76,23 +76,27 @@ class LocalProcessHandler(BaseHTTPRequestHandler):
                 text = "# prompt.md no compilado aún."
             self.send_text_response(text)
 
-        # --- RECURSOS ESTÁTICOS (WEB UI) ---
+        # --- RECURSOS ESTÁTICOS (WEB UI MODULAR) ---
         else:
             rel_path = path.lstrip("/")
             if rel_path == "" or rel_path == "index.html":
                 target = WEB_DIR / "index.html"
-                mime = "text/html; charset=utf-8"
-            elif rel_path == "style.css":
-                target = WEB_DIR / "style.css"
-                mime = "text/css; charset=utf-8"
-            elif rel_path == "app.js":
-                target = WEB_DIR / "app.js"
-                mime = "application/javascript; charset=utf-8"
             else:
                 target = WEB_DIR / rel_path
-                mime = "application/octet-stream"
 
             if target.exists() and target.is_file():
+                ext = target.suffix.lower()
+                mime_map = {
+                    ".html": "text/html; charset=utf-8",
+                    ".css": "text/css; charset=utf-8",
+                    ".js": "application/javascript; charset=utf-8",
+                    ".mjs": "application/javascript; charset=utf-8",
+                    ".json": "application/json; charset=utf-8",
+                    ".svg": "image/svg+xml",
+                    ".png": "image/png",
+                    ".ico": "image/x-icon"
+                }
+                mime = mime_map.get(ext, "application/octet-stream")
                 self.send_text_response(target.read_bytes(), mime)
             else:
                 self.send_text_response("404 Not Found", status=404)

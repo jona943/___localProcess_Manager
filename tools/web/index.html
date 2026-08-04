@@ -96,8 +96,8 @@
             <div class="form-row">
               <div class="form-group flex-1">
                 <label>Categoría</label>
-                <select id="learn-category-select" onchange="handleLearningCategoryChange(this)">
-                  <option value="" selected>-- Escoge una categoría --</option>
+                <select id="learn-category-select">
+                  <option value="" selected>-- Escoge una opción --</option>
                   <option value="arquitectura">[ARQUITECTURA] Diseño y patrones</option>
                   <option value="estabilidad">[ESTABILIDAD] Rendimiento y CDNs</option>
                   <option value="estilo_codigo">[ESTILO_CÓDIGO] Formato y convención</option>
@@ -105,17 +105,17 @@
                   <option value="herramientas">[HERRAMIENTAS] CLI y entornos</option>
                   <option value="Otro">✍️ Otro (Especificar personalizado)...</option>
                 </select>
-                <input type="text" id="learn-category-custom" class="custom-input-other" placeholder="Escribe tu categoría personalizada..." style="display: none; margin-top: 0.5rem;">
+                <input type="text" id="learn-category-custom" class="custom-input-other" placeholder="[Escribe tu categoría personalizada...]" style="display: none; margin-top: 0.5rem;">
               </div>
               <div class="form-group flex-1">
                 <label>Tema / Título Breve</label>
-                <input type="text" id="learn-topic" placeholder="ej: Uso de Devicon CDN" required>
+                <input type="text" id="learn-topic" placeholder="[ej: Uso de Devicon CDN]" required>
               </div>
             </div>
             <div class="form-row">
               <div class="form-group flex-full">
                 <label>Regla Clave o Corrección a Recordar a Perpetuidad</label>
-                <textarea id="learn-rule" placeholder="Regla o hecho que el agente NUNCA debe olvidar..." rows="2" required></textarea>
+                <textarea id="learn-rule" placeholder="[Regla o hecho que el agente NUNCA debe olvidar...]" rows="2" required></textarea>
               </div>
             </div>
             <div class="form-row flex-end">
@@ -143,7 +143,7 @@
               <button type="button" class="btn-chip" onclick="setTaskPreset('📝 Sincronización de documentación y memoria')">📝 Documentación</button>
             </div>
             <div class="form-row">
-              <input type="text" id="task-input" placeholder="Resumen de la tarea completada..." required>
+              <input type="text" id="task-input" placeholder="[Resumen de la tarea completada...]" required>
               <button type="button" class="btn-primary" onclick="addTaskLog()">Guardar Log</button>
             </div>
           </div>
@@ -170,6 +170,6 @@
   <!-- Toast Notification -->
   <div id="toast" class="toast"></div>
 
-  <script src="app.js"></script>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>

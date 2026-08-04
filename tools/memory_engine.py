@@ -232,7 +232,7 @@ def seed_initial_data():
     proj_config = get_all_config("project_config")
     if not proj_config:
         defaults_proj = {
-            "Nombre del Proyecto": "localProcess_Manager",
+            "Nombre del Proyecto": "Proyecto",
             "Directorio del Proyecto": "./",
             "Archivo de Contexto": "README.md",
             "Tecnologías Principales": "Python 3, SQLite, MCP",
@@ -243,25 +243,6 @@ def seed_initial_data():
         }
         for k, v in defaults_proj.items():
             set_config("project_config", k, v)
-
-    learnings = get_learnings()
-    if not learnings:
-        add_learning(
-            category="arquitectura",
-            topic="Regla de Oro Didáctica",
-            rule="El agente NUNCA debe modificar código directamente sin petición explícita del usuario.",
-            importance=5
-        )
-        add_learning(
-            category="estabilidad",
-            topic="Uso de Devicon CDN",
-            rule="Usar siempre raw.githubusercontent.com para logos Devicon SVG.",
-            importance=4
-        )
-
-    tasks = get_task_logs()
-    if not tasks:
-        add_task_log("Inicialización de la arquitectura Dual-Drive con SQLite en Python.")
 
     # Exportar a Markdown inmediatamente
     export_to_markdown()
