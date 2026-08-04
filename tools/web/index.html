@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>localProcess_Manager — Dashboard de Configuración</title>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar / Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <div class="brand-text">
+          <h2>localProcess</h2>
+          <span class="badge">v2.0 Dual-Drive</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <button class="nav-item active" data-tab="developer">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Desarrollador
+        </button>
+        <button class="nav-item" data-tab="project">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          Proyecto
+        </button>
+        <button class="nav-item" data-tab="learnings">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 14 18.469V19a2 2 0 0 1-2 2h-0a2 2 0 0 1-2-2v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          Aprendizajes Clave
+        </button>
+        <button class="nav-item" data-tab="tasks">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Bitácora de Tareas
+        </button>
+        <button class="nav-item" data-tab="prompt">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          Prompt Compilado
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button id="btn-compile-prompt" class="btn-compile">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Compilar System Prompt
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Panel -->
+    <main class="main-content">
+      <header class="top-bar">
+        <div class="header-title">
+          <h1 id="page-title">Configuración del Desarrollador</h1>
+          <p id="page-subtitle">Personalidad del agente, idioma y preferencias de didáctica</p>
+        </div>
+        <div class="status-indicator">
+          <span class="status-dot"></span>
+          <span class="status-text">SQLite Dual-Drive Activo</span>
+        </div>
+      </header>
+
+      <div class="content-body">
+        <!-- TAB 1: Developer Config -->
+        <section id="tab-developer" class="tab-pane active">
+          <form id="form-developer" class="grid-form">
+            <!-- Dynamic Form Fields inserted by JS -->
+          </form>
+          <div class="form-actions">
+            <button type="button" class="btn-primary" onclick="saveDeveloperConfig()">Guardar Cambios</button>
+          </div>
+        </section>
+
+        <!-- TAB 2: Project Config -->
+        <section id="tab-project" class="tab-pane">
+          <form id="form-project" class="grid-form">
+            <!-- Dynamic Form Fields inserted by JS -->
+          </form>
+          <div class="form-actions">
+            <button type="button" class="btn-primary" onclick="saveProjectConfig()">Guardar Cambios</button>
+          </div>
+        </section>
+
+        <!-- TAB 3: Learnings -->
+        <section id="tab-learnings" class="tab-pane">
+          <div class="add-card">
+            <h3>Agregar Nuevo Aprendizaje / Regla Clave</h3>
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label>Categoría</label>
+                <select id="learn-category-select" onchange="handleLearningCategoryChange(this)">
+                  <option value="" selected>-- Escoge una categoría --</option>
+                  <option value="arquitectura">[ARQUITECTURA] Diseño y patrones</option>
+                  <option value="estabilidad">[ESTABILIDAD] Rendimiento y CDNs</option>
+                  <option value="estilo_codigo">[ESTILO_CÓDIGO] Formato y convención</option>
+                  <option value="apis">[APIS_REPOSITORIO] Endpoints y contratos</option>
+                  <option value="herramientas">[HERRAMIENTAS] CLI y entornos</option>
+                  <option value="Otro">✍️ Otro (Especificar personalizado)...</option>
+                </select>
+                <input type="text" id="learn-category-custom" class="custom-input-other" placeholder="Escribe tu categoría personalizada..." style="display: none; margin-top: 0.5rem;">
+              </div>
+              <div class="form-group flex-1">
+                <label>Tema / Título Breve</label>
+                <input type="text" id="learn-topic" placeholder="ej: Uso de Devicon CDN" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group flex-full">
+                <label>Regla Clave o Corrección a Recordar a Perpetuidad</label>
+                <textarea id="learn-rule" placeholder="Regla o hecho que el agente NUNCA debe olvidar..." rows="2" required></textarea>
+              </div>
+            </div>
+            <div class="form-row flex-end">
+              <label class="importance-label">Relevancia (1 al 5): 
+                <input type="number" id="learn-importance" min="1" max="5" value="5">
+              </label>
+              <button type="button" class="btn-primary" onclick="addLearning()">Registrar Regla Clave</button>
+            </div>
+          </div>
+
+          <div class="learnings-list" id="learnings-container">
+            <!-- Dynamic List -->
+          </div>
+        </section>
+
+        <!-- TAB 4: Tasks -->
+        <section id="tab-tasks" class="tab-pane">
+          <div class="add-card">
+            <h3>Registrar Entrada en Bitácora de Tareas</h3>
+            <div class="quick-presets">
+              <span class="preset-label">Plantillas rápidas:</span>
+              <button type="button" class="btn-chip" onclick="setTaskPreset('🚀 Inicialización del Proyecto y estructura inicial')">🚀 Inicialización</button>
+              <button type="button" class="btn-chip" onclick="setTaskPreset('🔧 Refactorización modular y optimización de código')">🔧 Refactorización</button>
+              <button type="button" class="btn-chip" onclick="setTaskPreset('🐛 Depuración de errores y pruebas de ejecución')">🐛 Depuración</button>
+              <button type="button" class="btn-chip" onclick="setTaskPreset('📝 Sincronización de documentación y memoria')">📝 Documentación</button>
+            </div>
+            <div class="form-row">
+              <input type="text" id="task-input" placeholder="Resumen de la tarea completada..." required>
+              <button type="button" class="btn-primary" onclick="addTaskLog()">Guardar Log</button>
+            </div>
+          </div>
+
+          <div class="timeline" id="tasks-container">
+            <!-- Dynamic Timeline -->
+          </div>
+        </section>
+
+        <!-- TAB 5: Prompt Preview -->
+        <section id="tab-prompt" class="tab-pane">
+          <div class="code-container">
+            <div class="code-header">
+              <span>prompt.md</span>
+              <button class="btn-icon" onclick="copyPrompt()">Copiar</button>
+            </div>
+            <pre><code id="prompt-preview">Cargando prompt.md...</code></pre>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

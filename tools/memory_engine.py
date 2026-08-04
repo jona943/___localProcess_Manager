@@ -125,6 +125,14 @@ def get_learnings(category: str = None) -> list:
         return [dict(row) for row in rows]
 
 
+def delete_learning(learning_id: int):
+    """Elimina un aprendizaje o regla clave por ID."""
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM learnings WHERE id=?", (learning_id,))
+        conn.commit()
+
+
 def add_task_log(task_summary: str):
     """Registra una entrada en la bitácora de tareas."""
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -134,6 +142,14 @@ def add_task_log(task_summary: str):
             "INSERT INTO task_logs (task_summary, created_at) VALUES (?, ?)",
             (task_summary, now)
         )
+        conn.commit()
+
+
+def delete_task_log(task_id: int):
+    """Elimina una entrada de la bitácora de tareas por ID."""
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM task_logs WHERE id=?", (task_id,))
         conn.commit()
 
 
@@ -200,20 +216,18 @@ def seed_initial_data():
     init_db()
 
     # Si la tabla dev_config está vacía, sembrar con valores por defecto
-    dev_config = get_all_config("developer_config")
-    if not dev_config:
-        defaults_dev = {
-            "Nombre del Programador": "Jonathan Medina",
-            "Nombre del Agente": "Plebe-AI",
-            "Personalidad/Tono": "Español latino didáctico con acento sinaloense",
-            "Idioma Principal": "Español",
-            "Terminología Técnica": "Spanglish técnico",
-            "Nivel de Didáctica": "Alto (Explicar paso a paso)",
-            "Comentarios en Código": "Instructivos y sencillos",
-            "Frecuencia de Feedback": "Ocasional"
-        }
-        for k, v in defaults_dev.items():
-            set_config("developer_config", k, v)
+    defaults_dev = {
+        "Nombre del Programador": "Desarrollador",
+        "Nombre del Agente": "Agente-AI",
+        "Personalidad/Tono": "Profesional, didáctico y directo",
+        "Idioma Principal": "Español",
+        "Terminología Técnica": "3. Spanglish técnico estándar",
+        "Nivel de Didáctica": "1. Máximo / Didáctico (Explicar paso a paso)",
+        "Comentarios en Código": "Instructivo y sencillo",
+        "Frecuencia de Feedback": "Ocasional"
+    }
+    for k, v in defaults_dev.items():
+        set_config("developer_config", k, v)
 
     proj_config = get_all_config("project_config")
     if not proj_config:

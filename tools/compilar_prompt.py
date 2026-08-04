@@ -51,11 +51,11 @@ def compilar():
     project_config = parse_markdown_table(PROJECT_CONFIG_PATH)
 
     # Valores por defecto
-    dev_name = dev_config.get("Nombre del Programador", "dev-jonathan")
-    name = dev_config.get("Nombre del Agente", "Plebe-AI")
+    dev_name = dev_config.get("Nombre del Programador", "Desarrollador")
+    name = dev_config.get("Nombre del Agente", "Agente-AI")
     tone = dev_config.get(
         "Personalidad/Tono",
-        "Español latino con acento sinaloense (pariente, plebe, fierro, arremangar)",
+        "Profesional, didáctico y directo",
     )
     lang = dev_config.get("Idioma Principal", "Español")
     tech_term = dev_config.get(

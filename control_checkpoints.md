@@ -16,12 +16,12 @@ Este documento sirve para realizar el seguimiento del proceso de estandarizació
   - [x] Crear la carpeta `tools/`.
 
 - [x] **3. Inicializar los Archivos de Memoria (`ai-memory/`)**
-  - [x] Crear `ai-memory/perfil_usuario.md` con las preferencias actuales identificadas (por ejemplo, el tono sinaloense y estilo didáctico).
+  - [x] Crear `ai-memory/perfil_usuario.md` con las preferencias actuales identificadas (por ejemplo, tono profesional y estilo didáctico).
   - [x] Crear `ai-memory/aprendizajes_clave.md` para albergar correcciones a perpetuidad.
   - [x] Crear `ai-memory/bitacora_tareas.md` con el log de la tarea actual.
 
 - [x] **4. Actualizar y Refinar `prompt.md`**
-  - [x] Mantener la personalidad (acento sinaloense, didáctico).
+  - [x] Mantener la personalidad (tono profesional, didáctico y directo).
   - [x] Actualizar las instrucciones de memoria para usar los archivos específicos en vez de archivos fechados sueltos.
   - [x] Describir el uso de `workspace/inputs/` y `workspace/outputs/`.
   - [x] Describir el uso de `tools/` y la lectura de `LocalDrop-Contexto.md`.

@@ -77,5 +77,5 @@ Usa el archivo compilado [`prompt.md`](./prompt.md) con tu cliente de IA CLI pre
 ---
 
 <p align="center">
-  <sub>localProcess_Manager — AI CLI Architecture & Workflow 2026 | Desarrollado por Jonathan Medina</sub>
+  <sub>localProcess_Manager — AI CLI Architecture & Workflow 2026</sub>
 </p>
