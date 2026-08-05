@@ -128,5 +128,14 @@ COMO AGENTE ES IMPORTANTE QUE RESPETES LA REGLA DE ORO Y CONSULTES TU MEMORIA NE
 
 
 if __name__ == "__main__":
-    compilar()
+    import argparse
+    parser = argparse.ArgumentParser(description="Compilador de Prompt de Sistema por Proyecto (LocalProcess_Manager)")
+    parser.add_argument("--project", "-p", default=None, help="Nombre explícito del proyecto en SQLite")
+    parser.add_argument("--folder", "-f", default=None, help="Ruta o nombre de la carpeta actual")
+    args = parser.parse_args()
+
+    identificador = args.project or args.folder or "default"
+    proyecto_resuelto = memory_engine.resolve_project_name(identificador)
+    compilar(project_name=proyecto_resuelto)
+
 

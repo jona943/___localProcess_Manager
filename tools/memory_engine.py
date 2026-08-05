@@ -97,6 +97,29 @@ def init_db():
 # GESTIÓN DE PROYECTOS
 # ==========================================
 
+def resolve_project_name(identifier: str) -> str:
+    """Resuelve el nombre del proyecto en SQLite a partir del nombre o ruta de la carpeta actual."""
+    init_db()
+    if not identifier or identifier in ("default", "global"):
+        return "default"
+
+    clean_id = identifier.strip().rstrip("/")
+    folder_name = Path(clean_id).name.lower()
+
+    with get_connection() as conn:
+        # 1. Buscar coincidencia exacta por nombre
+        row = conn.execute("SELECT name FROM projects WHERE LOWER(name)=?", (folder_name,)).fetchone()
+        if row:
+            return row["name"]
+
+        # 2. Buscar por coincidencia parcial en la ruta (path)
+        row = conn.execute("SELECT name FROM projects WHERE LOWER(path) LIKE ?", (f"%{folder_name}%",)).fetchone()
+        if row:
+            return row["name"]
+
+    return "default"
+
+
 def get_projects() -> List[Dict[str, Any]]:
     """Obtiene la lista de todos los proyectos registrados con su nombre personalizado."""
     init_db()
