@@ -56,7 +56,7 @@ $BLOCK_START
 function agy-context() {
     local current_folder=\"\$PWD\"
     python3 \"$BASE_DIR/tools/compilar_prompt.py\" --folder \"\$current_folder\" > /dev/null 2>&1
-    agy --system-prompt \"$BASE_DIR/prompt.md\" \"\$@\"
+    agy -i \"\$(cat \"$BASE_DIR/prompt.md\")\" \"\$@\"
 }
 alias agy-ctx='agy-context'
 $BLOCK_END
