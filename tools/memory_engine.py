@@ -98,11 +98,21 @@ def init_db():
 # ==========================================
 
 def get_projects() -> List[Dict[str, Any]]:
-    """Obtiene la lista de todos los proyectos registrados."""
+    """Obtiene la lista de todos los proyectos registrados con su nombre personalizado."""
     init_db()
     with get_connection() as conn:
         rows = conn.execute("SELECT name, path, context_file, created_at FROM projects ORDER BY name ASC").fetchall()
-        return [dict(row) for row in rows]
+        projects = []
+        for row in rows:
+            p = dict(row)
+            cfg = conn.execute(
+                "SELECT value FROM project_config WHERE project_name=? AND key='Nombre del Proyecto'",
+                (p["name"],)
+            ).fetchone()
+            p["display_name"] = cfg["value"] if cfg and cfg["value"] else p["name"]
+            projects.append(p)
+        return projects
+
 
 
 def add_project(name: str, path: str = "./", context_file: str = "README.md") -> bool:

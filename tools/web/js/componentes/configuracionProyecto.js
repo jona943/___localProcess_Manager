@@ -2,7 +2,7 @@
 
 import { PROJECT_FIELDS_SCHEMA } from '../config.js';
 import { escapeHtml, findMatchingOption, handleSelectChange, showToast } from '../utils.js';
-import { getProyectoActivo } from './selectorProyectos.js';
+import { getProyectoActivo, cargarSelectorProyectos } from './selectorProyectos.js';
 
 export async function cargarConfiguracionProyecto() {
   const proyectoActual = getProyectoActivo();
@@ -29,7 +29,6 @@ export async function cargarConfiguracionProyecto() {
 
       if (esquema.free) {
         let val = valorBruto;
-        if (val === 'localProcess_Manager' || val === 'Proyecto') val = '';
         const placeholderTexto = esquema.placeholder || "[Coloca aquí la información del proyecto...]";
         grupo.innerHTML = `
           <label>${clave}</label>
@@ -120,6 +119,7 @@ export async function guardarConfiguracionProyecto() {
     });
     if (respuesta.ok) {
       showToast(`Configuración de '${proyectoActual}' guardada en SQLite & LocalStorage`);
+      await cargarSelectorProyectos();
     } else {
       showToast('Guardado en LocalStorage (Prueba Local)');
     }

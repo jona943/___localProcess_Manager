@@ -37,7 +37,8 @@ export async function cargarSelectorProyectos() {
       if (p.name === proyectoActivo) encontrado = true;
       const opt = document.createElement('option');
       opt.value = p.name;
-      opt.innerText = `📁 Proyecto: ${p.name}`;
+      const nombreMostrar = p.display_name || p.name;
+      opt.innerText = `📁 Proyecto: ${nombreMostrar}`;
       if (p.name === proyectoActivo) opt.selected = true;
       selectElem.appendChild(opt);
     });
@@ -100,3 +101,34 @@ export async function registrarNuevoProyecto() {
     showToast('Error conectando con el servidor', true);
   }
 }
+
+export async function eliminarProyectoActivo() {
+  const activo = getProyectoActivo();
+  if (activo === 'default') {
+    showToast("El proyecto 'default' es el entorno base del sistema y no se puede eliminar.", true);
+    return;
+  }
+
+  const confirmar = confirm(`¿Estás seguro de que deseas eliminar permanentemente el proyecto '${activo}' y todos sus datos en SQLite?`);
+  if (!confirmar) return;
+
+  try {
+    const res = await fetch('/api/projects/delete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: activo })
+    });
+
+    if (res.ok) {
+      showToast(`Proyecto '${activo}' eliminado con éxito.`);
+      localStorage.removeItem(`lpm_project_config_${activo}`);
+      setProyectoActivo('default');
+      await cargarSelectorProyectos();
+    } else {
+      showToast('Error al eliminar el proyecto', true);
+    }
+  } catch (err) {
+    showToast('Error de conexión con el servidor', true);
+  }
+}
+
