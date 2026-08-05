@@ -47,3 +47,18 @@ export function handleSelectChange(selectElem) {
     customInput.style.display = 'none';
   }
 }
+
+export function limpiarLocalStorage(onSuccessCallback) {
+  if (confirm("¿Estás seguro de eliminar el respaldo temporal en LocalStorage?\n\n(Nota: Esto NO afectará los datos guardados en la base de datos SQLite memory.db)")) {
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith('lpm_')) {
+        localStorage.removeItem(key);
+      }
+    });
+    showToast("LocalStorage borrado correctamente");
+    if (typeof onSuccessCallback === 'function') {
+      onSuccessCallback();
+    }
+  }
+}
+

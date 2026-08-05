@@ -61,17 +61,18 @@ export const PROJECT_FIELDS_SCHEMA = {
   "Archivo de Contexto": { free: true, placeholder: "[Nombre del archivo técnico de contexto, ej: README.md]" },
   "Tecnologías Principales": {
     options: [
+      "Python 3, SQLite, MCP",
       "Node.js, JavaScript, HTML5",
-      "Python 3, Fast-API / Flask",
       "React, TypeScript, TailwindCSS",
       "Next.js, React, Node.js",
+      "Python 3, FastAPI / Flask",
       "Go (Golang), gRPC, Docker",
       "Java, Spring Boot",
       "C# (.NET Core)",
       "PHP, Laravel"
     ]
   },
-  "Módulos": {
+  "Módulos de JavaScript": {
     options: [
       "ES Modules (import / export)",
       "CommonJS (require)",
@@ -82,6 +83,7 @@ export const PROJECT_FIELDS_SCHEMA = {
   },
   "Estilos (CSS)": {
     options: [
+      "Vanilla CSS (Dark Mode IDE)",
       "Vanilla CSS (Mover inline a externos)",
       "TailwindCSS (Clases de utilidad)",
       "Sass / SCSS",
@@ -92,8 +94,8 @@ export const PROJECT_FIELDS_SCHEMA = {
   },
   "Manejo de Asincronía": {
     options: [
-      "Asíncrono puro (async/await, Promesas)",
       "Asyncio / Native SQLite",
+      "Asíncrono puro (async/await, Promesas)",
       "Callbacks / Event Loop tradicional",
       "RxJS / Observables",
       "Multiprocesamiento / Threads"
@@ -101,11 +103,11 @@ export const PROJECT_FIELDS_SCHEMA = {
   },
   "Arquitectura de Código": {
     options: [
-      "Modular src/ (routes, controllers, services)",
       "Dual-Drive (SQLite + MCP + UI)",
+      "Modular src/ (routes, controllers, services)",
       "Modelo-Vista-Controlador (MVC)",
       "Arquitectura Hexagonal / Clean Architecture",
-      "Microservicios Decoplados"
+      "Microservicios Desacoplados"
     ]
   }
 };

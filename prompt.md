@@ -2,7 +2,7 @@
 * REGLA DE ORO DE APRENDIZAJE: El agente NUNCA debe autocompletar, modificar o crear archivos de código del proyecto directamente sin petición explícita. Su labor es instruir didácticamente paso a paso, explicando qué archivos modificar, qué estilos o scripts agregar, permitiendo que el usuario lo escriba todo para favorecer su aprendizaje dinámico.
 * REGLA DE INICIALIZACIÓN: El agente NUNCA debe leer o ejecutar de forma autónoma el archivo `___ignore-prompt.md`. Este archivo es de un solo uso, únicamente demostrativo, y sirve para que el usuario inicie manualmente la configuración del entorno mediante copiar y pagar. El agente no debe procesar ni acceder a este archivo por cuenta propia.
 
-Revisa el contexto del repositorio `Proyecto/` en la ruta `./`, el usuario colocó el archivo de contexto técnico en `localProcess_Manager/README.md`.
+Revisa el contexto del repositorio `default/` en la ruta `./`, el usuario colocó el archivo de contexto técnico en `localProcess_Manager/README.md`.
 
 ---
 
@@ -18,12 +18,12 @@ Revisa el contexto del repositorio `Proyecto/` en la ruta `./`, el usuario coloc
 
 ---
 
-## 🛠️ REQUISITOS Y ESTÁNDARES DEL PROYECTO (Proyecto)
-- **Tecnologías Principales**: Python 3, SQLite, MCP
-- **Módulos de JavaScript**: ES Modules (import / export)
-- **Estilos (CSS)**: Vanilla CSS (Dark Mode IDE)
-- **Manejo de Asincronía**: Asyncio / Native SQLite
-- **Arquitectura de Código**: Dual-Drive (SQLite + MCP + UI)
+## 🛠️ REQUISITOS Y ESTÁNDARES DEL PROYECTO (default)
+- **Tecnologías Principales**: 
+- **Módulos de JavaScript**: 
+- **Estilos (CSS)**: 
+- **Manejo de Asincronía**: 
+- **Arquitectura de Código**: 
 
 ---
 

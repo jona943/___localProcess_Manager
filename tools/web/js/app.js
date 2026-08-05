@@ -8,6 +8,9 @@ import { agregarAprendizaje, cargarAprendizajes, inicializarEventosAprendizajes 
 import { agregarLogTarea, cargarTareas, establecerPlantillaTarea } from './componentes/bitacoraTareas.js';
 import { compilarPrompt, copiarPrompt } from './componentes/visorPrompt.js';
 
+import { limpiarLocalStorage } from './utils.js';
+import { refrescarComponentesPorProyecto } from './componentes/selectorProyectos.js';
+
 document.addEventListener('DOMContentLoaded', async () => {
   // Inicializar navegación de pestañas
   inicializarNavegacion();
@@ -25,6 +28,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   const btnNuevoProyecto = document.getElementById('btn-nuevo-proyecto');
   if (btnNuevoProyecto) {
     btnNuevoProyecto.addEventListener('click', registrarNuevoProyecto);
+  }
+
+  const btnClearLocalStorage = document.getElementById('btn-clear-localstorage');
+  if (btnClearLocalStorage) {
+    btnClearLocalStorage.addEventListener('click', () => {
+      limpiarLocalStorage(() => {
+        cargarConfiguracionDesarrollador();
+        refrescarComponentesPorProyecto();
+      });
+    });
   }
 
   // Exponer funciones necesarias a la ventana global

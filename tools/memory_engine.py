@@ -123,11 +123,11 @@ def add_project(name: str, path: str = "./", context_file: str = "README.md") ->
         "Nombre del Proyecto": name,
         "Directorio del Proyecto": path,
         "Archivo de Contexto": context_file,
-        "Tecnologías Principales": "Python 3, SQLite, MCP",
-        "Módulos": "Python standard library",
-        "Estilos (CSS)": "Vanilla CSS (Dark Mode IDE)",
-        "Manejo de Asincronía": "Asyncio / Native SQLite",
-        "Arquitectura de Código": "Dual-Drive (SQLite + MCP + UI)"
+        "Tecnologías Principales": "",
+        "Módulos de JavaScript": "",
+        "Estilos (CSS)": "",
+        "Manejo de Asincronía": "",
+        "Arquitectura de Código": ""
     }
     for k, v in defaults_proj.items():
         set_config("project_config", k, v, project_name=name)
