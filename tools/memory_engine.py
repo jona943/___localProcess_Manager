@@ -192,8 +192,22 @@ def get_all_config(table_name: str, project_name: str = "default") -> dict:
 
 
 # ==========================================
-# APRENDIZAJES & BITÁCORA MULTIPROYECTO
+# APRENDIZAJES & BITÁCORA MULTIPROYECTO (RAG DUAL)
 # ==========================================
+
+def sync_to_neural_brain(content: str, metadata: dict = None):
+    """Sincroniza un fragmento de conocimiento directamente en el motor RAG Híbrido (FTS5 + Vectores RRF)."""
+    try:
+        import sys
+        sys_path = Path(__file__).resolve().parent / "neural_brain"
+        if str(sys_path) not in sys.path:
+            sys.path.append(str(sys_path))
+        from vector_store import NeuralVectorStore
+        store = NeuralVectorStore(db_path=DB_PATH)
+        store.add_memory(content, metadata or {})
+    except Exception as e:
+        print(f"Advertencia: No se pudo auto-indexar en RAG Híbrido: {e}")
+
 
 def add_learning(category: str, topic: str, rule: str, importance: int = 1, project_name: str = "global"):
     """Registra un nuevo aprendizaje o regla clave asignado a un proyecto o global."""
@@ -206,6 +220,12 @@ def add_learning(category: str, topic: str, rule: str, importance: int = 1, proj
             (category, topic, rule, importance, now, project_name)
         )
         conn.commit()
+
+    # Auto-indexar directamente en RAG Híbrido (SQLite FTS5 + Vectores)
+    sync_to_neural_brain(
+        f"[{category.upper()}] {topic}: {rule}",
+        {"tipo": "aprendizaje", "categoria": category, "proyecto": project_name, "importancia": importance}
+    )
 
 
 def get_learnings(category: str = None, project_name: str = "default") -> list:
@@ -244,6 +264,12 @@ def add_task_log(task_summary: str, project_name: str = "default"):
             (task_summary, now, project_name)
         )
         conn.commit()
+
+    # Auto-indexar directamente en RAG Híbrido (SQLite FTS5 + Vectores)
+    sync_to_neural_brain(
+        f"[TAREA - {project_name}] {task_summary}",
+        {"tipo": "tarea", "proyecto": project_name}
+    )
 
 
 def delete_task_log(task_id: int):
