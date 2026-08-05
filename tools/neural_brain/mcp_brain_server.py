@@ -56,18 +56,23 @@ def handle_tools_list(request_id: str):
     tools = [
         {
           "name": "consultar_memoria_neuronal",
-          "description": "Busca semánticamente en el Segundo Cerebro Neuronal (sub-milisegundo). Recupera los fragmentos de código, reglas o arquitectura más relevantes sin consumir tokens excesivos.",
+          "description": "Busca híbridamente (FTS5 BM25 + Similitud Vectorial RRF) en el Segundo Cerebro Neuronal en sub-milisegundos. Recupera los fragmentos de código, reglas o arquitectura más relevantes sin consumir tokens excesivos.",
           "inputSchema": {
             "type": "object",
             "properties": {
               "consulta": {
                 "type": "string",
-                "description": "Consulta o pregunta semántica sobre el proyecto o las reglas del desarrollador."
+                "description": "Consulta o pregunta semántica/técnica sobre el proyecto o las reglas del desarrollador."
               },
               "limite": {
                 "type": "integer",
                 "description": "Número de resultados principales a recuperar (por defecto 3).",
                 "default": 3
+              },
+              "modo": {
+                "type": "string",
+                "description": "Modo de búsqueda RAG: 'hibrido' (FTS5 + Vectores RRF), 'semantico' (solo vectores), 'palabra_clave' (solo FTS5 BM25).",
+                "default": "hibrido"
               }
             },
             "required": ["consulta"]
@@ -75,7 +80,7 @@ def handle_tools_list(request_id: str):
         },
         {
           "name": "guardar_memoria_neuronal",
-          "description": "Guarda e indexa un nuevo conocimiento, regla de código o aprendizaje relevante en el espacio vectorial del Segundo Cerebro.",
+          "description": "Guarda e indexa un nuevo conocimiento, regla de código o aprendizaje relevante en el espacio vectorial y FTS5 del Segundo Cerebro.",
           "inputSchema": {
             "type": "object",
             "properties": {
@@ -94,7 +99,7 @@ def handle_tools_list(request_id: str):
         },
         {
           "name": "limpiar_memoria_neuronal",
-          "description": "Limpia el índice vectorial del Segundo Cerebro Neuronal.",
+          "description": "Limpia el índice vectorial y FTS5 del Segundo Cerebro Neuronal.",
           "inputSchema": {
             "type": "object",
             "properties": {}
@@ -120,16 +125,24 @@ def handle_tools_call(request_id: str, params: dict):
         if tool_name == "consultar_memoria_neuronal":
             query = args.get("consulta", "")
             top_k = int(args.get("limite", 3))
+            modo = args.get("modo", "hibrido").lower()
             
-            resultados = store.search_similar(query, top_k=top_k)
+            if modo == "semantico":
+                resultados = store.search_similar(query, top_k=top_k)
+            elif modo == "palabra_clave":
+                resultados = store.search_fts(query, top_k=top_k)
+            else:
+                resultados = store.search_hybrid(query, top_k=top_k)
             
             if resultados:
-                texto_salida = f"🧠 Resumen Neuronal ({len(resultados)} coincidencia(s)):\n\n"
+                texto_salida = f"🧠 Resumen Neuronal RAG [{modo.upper()}] ({len(resultados)} coincidencia(s)):\n\n"
                 for idx, item in enumerate(resultados, 1):
-                    texto_salida += f"[{idx}] (Similitud: {item['similarity']} | {item['search_latency_ms']} ms)\n"
+                    score_str = f"RRF Score: {item['rrf_score']}" if "rrf_score" in item else f"Similitud: {item.get('similarity', 'N/A')}"
+                    lat_str = f"{item['search_latency_ms']} ms" if "search_latency_ms" in item else "N/A"
+                    texto_salida += f"[{idx}] ({score_str} | {lat_str})\n"
                     texto_salida += f"    {item['content']}\n\n"
             else:
-                texto_salida = "No se encontraron memorias vectoriales relevantes."
+                texto_salida = "No se encontraron memorias neuronales o RAG relevantes."
 
             send_jsonrpc_response({
                 "jsonrpc": "2.0",
