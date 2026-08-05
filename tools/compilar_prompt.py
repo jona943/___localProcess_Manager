@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 compilar_prompt.py — Compilador del Prompt de Sistema para localProcess_Manager
-Lee las configuraciones modulares desde SQLite (memory.db) y Markdown para generar prompt.md
+Lee la configuración directamente desde la base de datos relacional SQLite (memory.db) para generar prompt.md
 """
 
 import sys
@@ -9,54 +9,18 @@ from pathlib import Path
 
 TOOLS_DIR = Path(__file__).resolve().parent
 BASE_DIR = TOOLS_DIR.parent
-DEV_CONFIG_PATH = BASE_DIR / "user-config" / "1.developer-config.md"
-PROJECT_CONFIG_PATH = BASE_DIR / "user-config" / "2.project-config.md"
 PROMPT_OUTPUT_PATH = BASE_DIR / "prompt.md"
 
 sys.path.append(str(TOOLS_DIR))
 import memory_engine
 
 
-def parse_markdown_table(file_path: Path) -> dict:
-    if not file_path.exists():
-        return {}
-
-    content = file_path.read_text(encoding="utf-8")
-    config = {}
-
-    for line in content.splitlines():
-        trimmed = line.strip()
-        if trimmed.startswith("|") and trimmed.endswith("|"):
-            raw_cells = trimmed.split("|")
-            cells = [c.strip() for c in raw_cells[1:-1]]
-            if len(cells) < 2:
-                continue
-
-            prop_name = cells[0].lower()
-            if "propiedad" in prop_name or "---" in prop_name:
-                continue
-
-            key = cells[0].replace("**", "").strip()
-            value = cells[1].strip()
-
-            if key and value:
-                config[key] = value
-
-    return config
-
-
 def compilar(project_name: str = "default"):
     print(f"--- Iniciando Compilación del Prompt (Proyecto: {project_name}) ---")
 
-    # Intentar obtener configuración directa de SQLite memory_engine
+    # Obtener configuración directa desde SQLite (memory.db)
     dev_config = memory_engine.get_all_config("developer_config")
     project_config = memory_engine.get_all_config("project_config", project_name=project_name)
-
-    # Fallback a archivos Markdown si la BD no retorna datos
-    if not dev_config:
-        dev_config = parse_markdown_table(DEV_CONFIG_PATH)
-    if not project_config:
-        project_config = parse_markdown_table(PROJECT_CONFIG_PATH)
 
     # Valores por defecto
     dev_name = dev_config.get("Nombre del Programador", "Desarrollador")
@@ -85,7 +49,7 @@ def compilar(project_name: str = "default"):
     proj_dir = project_config.get("Directorio del Proyecto", "./")
     context_file = project_config.get("Archivo de Contexto", "README.md")
     tech_stack = project_config.get(
-        "Tecnologías Principales", "Python 3, SQLite, MCP"
+        "Tecnologías Principales", "Python 3, SQLite, MCP, RAG Híbrido"
     )
     js_modules = project_config.get(
         "Módulos de JavaScript", "ES Modules (import / export)"
@@ -98,7 +62,7 @@ def compilar(project_name: str = "default"):
         "Asyncio / Native SQLite",
     )
     architecture = project_config.get(
-        "Arquitectura de Código", "Dual-Drive (SQLite + MCP + UI)"
+        "Arquitectura de Código", "Zero-Clutter RAG Híbrido (SQLite + FTS5 + MCP + UI)"
     )
 
     system_prompt_template = f"""{{ PROMPT-GUIA }}
@@ -137,27 +101,26 @@ Para trabajar de manera eficiente y no perderte en el contexto, utilizarás la s
 1.  **Instrucciones Raíz y Contexto:**
     *   `prompt.md` (Este archivo compilado): Tu rol, reglas de interacción y personalidad.
     *   `{context_file}`: La base de conocimiento técnica principal del proyecto.
-2.  **ai-memory/ (Persistencia del Agente):**
-    *   `ai-memory/perfil_usuario.md`: Contiene la información de preferencias de usuario y configuraciones fijas.
-    *   `ai-memory/aprendizajes_clave.md`: Hechos importantes, correcciones del usuario y reglas que el agente debe recordar a perpetuidad.
-    *   `ai-memory/bitacora_tareas.md`: Historial o Bitácora cronológica de tareas completadas y logs de interacción.
+2.  **Base de Datos & RAG Neuronal (SQLite `memory.db`):**
+    *   Tus memorias, preferencias del programador `{dev_name}`, reglas clave y bitácora residen en `memory.db`.
+    *   Consultas y guardas memorias mediante el Servidor MCP (`consultar_memoria_neuronal`, `guardar_memoria_neuronal`) con Búsqueda Híbrida RAG (FTS5 + Vectores).
 3.  **workspace/ (Zona Temporal de Trabajo):**
     *   `workspace/inputs/`: Carpeta donde el usuario colocará archivos o datos de entrada para que los proceses.
     *   `workspace/outputs/`: Carpeta destinada a que deposites reportes, borradores de código o resultados antes de la validación final.
-4.  **tools/ (Capacidades y Esquemas):**
-    *   `tools/esquema_funciones.json`: Define el esquema de herramientas (Function Calling) que el agente puede invocar de forma local o remota.
+4.  **tools/ (Capacidades, Dashboard UI y MCP):**
+    *   `tools/server.py`: Servidor HTTP Local y Dashboard UI.
+    *   `tools/neural_brain/mcp_brain_server.py`: Servidor MCP JSON-RPC 2.0.
     *   `tools/compilar_prompt.py`: Compilador del Prompt en Python.
 
 ---
 
-## 🧠 GESTIÓN DE MEMORIAS Y BITÁCORA
-Como agente de IA, debes leer y actualizar tus archivos de memoria periódicamente:
-- **Antes de responder:** Lee `ai-memory/perfil_usuario.md` y `ai-memory/aprendizajes_clave.md` para adaptar tu respuesta al contexto histórico del programador `{dev_name}`.
-- **Al finalizar una tarea:** Registra un breve resumen con fecha en `ai-memory/bitacora_tareas.md`.
-- **Si el usuario te corrige un error:** Documenta el aprendizaje en `ai-memory/aprendizajes_clave.md`.
+## 🧠 GESTIÓN DE MEMORIAS Y BITÁCORA (SERVIDORES MCP & RAG HÍBRIDO)
+Como agente de IA, utilizas el protocolo MCP y el motor RAG Híbrido:
+- **Antes de responder a consultas complejas:** Invoca `consultar_memoria_neuronal` para recuperar en sub-milisegundos las reglas clave y el contexto histórico.
+- **Si el usuario te enseña una nueva regla o corrección:** Invoca `guardar_memoria_neuronal` para persistir el aprendizaje en SQLite y FTS5 de forma permanente.
 
 ## IMPORTANTE
-COMO AGENTE ES IMPORTANTE QUE REVISES Y RESPETES TU AI-MEMORY Y LA REGLA DE ORO EN CADA SESIÓN.
+COMO AGENTE ES IMPORTANTE QUE RESPETES LA REGLA DE ORO Y CONSULTES TU MEMORIA NEURONAL EN CADA SESIÓN.
 """
 
     PROMPT_OUTPUT_PATH.write_text(system_prompt_template, encoding="utf-8")
@@ -166,3 +129,4 @@ COMO AGENTE ES IMPORTANTE QUE REVISES Y RESPETES TU AI-MEMORY Y LA REGLA DE ORO 
 
 if __name__ == "__main__":
     compilar()
+

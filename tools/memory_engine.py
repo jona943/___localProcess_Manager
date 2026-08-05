@@ -290,81 +290,64 @@ def get_task_logs(project_name: str = "default") -> list:
 
 
 # ==========================================
-# SINCRONIZADOR DUAL (SQLite ➔ Markdown)
+# EXPORTADOR A DEMANDA (Consolidado Markdown)
 # ==========================================
 
-def export_to_markdown(project_name: str = "default"):
-    """Genera/Sincroniza la vista Markdown para humanos desde SQLite."""
+def generate_consolidated_markdown(project_name: str = "default") -> str:
+    """Genera un reporte Markdown consolidado bajo demanda desde SQLite (Single Source of Truth)."""
     init_db()
-    
-    # 1. Exportar Developer Config
+    md_content = f"# 🧠 Reporte Consolidado de Memoria (Proyecto: {project_name})\n\n"
+
+    # 1. Developer Config
     dev_data = get_all_config("developer_config")
-    dev_md_content = "# 👤 Configuración del Desarrollador (Vista Humana)\n\n"
-    dev_md_content += "| Propiedad | Valor |\n| :--- | :--- |\n"
+    md_content += "## 👤 Configuración del Desarrollador\n\n"
+    md_content += "| Propiedad | Valor |\n| :--- | :--- |\n"
     for k, v in dev_data.items():
-        dev_md_content += f"| **{k}** | {v} |\n"
-    DEV_CONFIG_MD.parent.mkdir(parents=True, exist_ok=True)
-    DEV_CONFIG_MD.write_text(dev_md_content, encoding="utf-8")
+        md_content += f"| **{k}** | {v} |\n"
+    md_content += "\n"
 
-    # 2. Exportar Project Config
+    # 2. Project Config
     proj_data = get_all_config("project_config", project_name=project_name)
-    proj_md_content = "# 🛠️ Configuración del Proyecto (Vista Humana)\n\n"
-    proj_md_content += "| Propiedad | Valor |\n| :--- | :--- |\n"
+    md_content += f"## 🛠️ Configuración del Proyecto ({project_name})\n\n"
+    md_content += "| Propiedad | Valor |\n| :--- | :--- |\n"
     for k, v in proj_data.items():
-        proj_md_content += f"| **{k}** | {v} |\n"
-    PROJECT_CONFIG_MD.parent.mkdir(parents=True, exist_ok=True)
-    PROJECT_CONFIG_MD.write_text(proj_md_content, encoding="utf-8")
+        md_content += f"| **{k}** | {v} |\n"
+    md_content += "\n"
 
-    # 3. Exportar Aprendizajes Clave
+    # 3. Aprendizajes Clave
     learnings = get_learnings(project_name=project_name)
-    learn_md_content = "# 🧠 Aprendizajes Clave y Reglas Persistentes\n\n"
+    md_content += "## 🧠 Aprendizajes Clave y Reglas Persistentes\n\n"
     if learnings:
         for item in learnings:
-            learn_md_content += f"### [{item['category'].upper()}] {item['topic']} (Proyecto: {item.get('project_name', 'global')})\n"
-            learn_md_content += f"- **Regla**: {item['rule']}\n"
-            learn_md_content += f"- *Registrado*: `{item['created_at']}` | Relevancia: {item['importance']}\n\n"
+            md_content += f"### [{item['category'].upper()}] {item['topic']}\n"
+            md_content += f"- **Regla**: {item['rule']}\n"
+            md_content += f"- *Registrado*: `{item['created_at']}` | Relevancia: {item['importance']}\n\n"
     else:
-        learn_md_content += "_No hay aprendizajes registrados aún._\n"
-    LEARNINGS_MD.parent.mkdir(parents=True, exist_ok=True)
-    LEARNINGS_MD.write_text(learn_md_content, encoding="utf-8")
+        md_content += "_No hay aprendizajes registrados aún._\n\n"
 
-    # 4. Exportar Bitácora de Tareas
+    # 4. Bitácora de Tareas
     tasks = get_task_logs(project_name=project_name)
-    tasks_md_content = "# 📝 Bitácora de Tareas y Logs de Interacción\n\n"
+    md_content += "## 📝 Bitácora de Tareas\n\n"
     if tasks:
         for t in tasks:
-            tasks_md_content += f"- **[{t['created_at']}]**: {t['task_summary']}\n"
+            md_content += f"- **[{t['created_at']}]**: {t['task_summary']}\n"
     else:
-        tasks_md_content += "_No hay tareas registradas en la bitácora._\n"
-    TASKS_MD.parent.mkdir(parents=True, exist_ok=True)
-    TASKS_MD.write_text(tasks_md_content, encoding="utf-8")
+        md_content += "_No hay tareas registradas en la bitácora._\n"
+
+    return md_content
 
 
-def parse_markdown_file(file_path: Path) -> dict:
-    """Lee y parsea tablas de propiedades en formato Markdown."""
-    if not file_path.exists():
-        return {}
-    content = file_path.read_text(encoding="utf-8")
-    config = {}
-    for line in content.splitlines():
-        trimmed = line.strip()
-        if trimmed.startswith("|") and trimmed.endswith("|"):
-            raw_cells = trimmed.split("|")
-            cells = [c.strip() for c in raw_cells[1:-1]]
-            if len(cells) < 2:
-                continue
-            prop_name = cells[0].lower()
-            if "propiedad" in prop_name or "---" in prop_name:
-                continue
-            key = cells[0].replace("**", "").strip()
-            value = cells[1].strip()
-            if key and value:
-                config[key] = value
-    return config
+def export_to_markdown(project_name: str = "default", output_file: Path = None) -> str:
+    """Genera y opcionalmente guarda un respaldo Markdown a disco solo cuando se solicita explícitamente."""
+    content = generate_consolidated_markdown(project_name=project_name)
+    if output_file:
+        output_file.parent.mkdir(parents=True, exist_ok=True)
+        output_file.write_text(content, encoding="utf-8")
+    return content
 
 
 def seed_initial_data():
-    """Siembra datos iniciales importando archivos Markdown si existen."""
+    """Siembra datos iniciales neutros por defecto en SQLite."""
     init_db()
 
     # Asegurar proyectos por defecto
@@ -373,18 +356,7 @@ def seed_initial_data():
         add_project("default", "./", "README.md")
         add_project("localProcess_Manager", "./", "README.md")
 
-    # 1. Importar primero desde Markdown si existen valores
-    dev_from_md = parse_markdown_file(DEV_CONFIG_MD)
-    for k, v in dev_from_md.items():
-        if k and v:
-            set_config("developer_config", k, v)
-
-    proj_from_md = parse_markdown_file(PROJECT_CONFIG_MD)
-    for k, v in proj_from_md.items():
-        if k and v:
-            set_config("project_config", k, v, project_name="localProcess_Manager")
-
-    # 2. Rellenar con defaults solo lo que falte
+    # Rellenar con defaults en SQLite solo si la tabla developer_config está vacía
     defaults_dev = {
         "Nombre del Programador": "Desarrollador",
         "Nombre del Agente": "Agente-AI",
@@ -400,10 +372,9 @@ def seed_initial_data():
         if k not in current_dev:
             set_config("developer_config", k, v)
 
-    export_to_markdown()
-
 
 if __name__ == "__main__":
-    print("--- Inicializando Base de Datos memory.db y Sincronizador Dual (Multi-Proyecto) ---")
+    print("--- Inicializando Base de Datos memory.db relacional y RAG Híbrido ---")
     seed_initial_data()
-    print("¡Base de datos memory.db creada y sincronizada!")
+    print("¡Base de datos memory.db lista (sin generación de .md redundantes)!")
+

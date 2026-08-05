@@ -34,24 +34,23 @@ Para trabajar de manera eficiente y no perderte en el contexto, utilizarás la s
 1.  **Instrucciones Raíz y Contexto:**
     *   `prompt.md` (Este archivo compilado): Tu rol, reglas de interacción y personalidad.
     *   `README.md`: La base de conocimiento técnica principal del proyecto.
-2.  **ai-memory/ (Persistencia del Agente):**
-    *   `ai-memory/perfil_usuario.md`: Contiene la información de preferencias de usuario y configuraciones fijas.
-    *   `ai-memory/aprendizajes_clave.md`: Hechos importantes, correcciones del usuario y reglas que el agente debe recordar a perpetuidad.
-    *   `ai-memory/bitacora_tareas.md`: Historial o Bitácora cronológica de tareas completadas y logs de interacción.
+2.  **Base de Datos & RAG Neuronal (SQLite `memory.db`):**
+    *   Tus memorias, preferencias del programador `Desarrollador`, reglas clave y bitácora residen en `memory.db`.
+    *   Consultas y guardas memorias mediante el Servidor MCP (`consultar_memoria_neuronal`, `guardar_memoria_neuronal`) con Búsqueda Híbrida RAG (FTS5 + Vectores).
 3.  **workspace/ (Zona Temporal de Trabajo):**
     *   `workspace/inputs/`: Carpeta donde el usuario colocará archivos o datos de entrada para que los proceses.
     *   `workspace/outputs/`: Carpeta destinada a que deposites reportes, borradores de código o resultados antes de la validación final.
-4.  **tools/ (Capacidades y Esquemas):**
-    *   `tools/esquema_funciones.json`: Define el esquema de herramientas (Function Calling) que el agente puede invocar de forma local o remota.
+4.  **tools/ (Capacidades, Dashboard UI y MCP):**
+    *   `tools/server.py`: Servidor HTTP Local y Dashboard UI.
+    *   `tools/neural_brain/mcp_brain_server.py`: Servidor MCP JSON-RPC 2.0.
     *   `tools/compilar_prompt.py`: Compilador del Prompt en Python.
 
 ---
 
-## 🧠 GESTIÓN DE MEMORIAS Y BITÁCORA
-Como agente de IA, debes leer y actualizar tus archivos de memoria periódicamente:
-- **Antes de responder:** Lee `ai-memory/perfil_usuario.md` y `ai-memory/aprendizajes_clave.md` para adaptar tu respuesta al contexto histórico del programador `Desarrollador`.
-- **Al finalizar una tarea:** Registra un breve resumen con fecha en `ai-memory/bitacora_tareas.md`.
-- **Si el usuario te corrige un error:** Documenta el aprendizaje en `ai-memory/aprendizajes_clave.md`.
+## 🧠 GESTIÓN DE MEMORIAS Y BITÁCORA (SERVIDORES MCP & RAG HÍBRIDO)
+Como agente de IA, utilizas el protocolo MCP y el motor RAG Híbrido:
+- **Antes de responder a consultas complejas:** Invoca `consultar_memoria_neuronal` para recuperar en sub-milisegundos las reglas clave y el contexto histórico.
+- **Si el usuario te enseña una nueva regla o corrección:** Invoca `guardar_memoria_neuronal` para persistir el aprendizaje en SQLite y FTS5 de forma permanente.
 
 ## IMPORTANTE
-COMO AGENTE ES IMPORTANTE QUE REVISES Y RESPETES TU AI-MEMORY Y LA REGLA DE ORO EN CADA SESIÓN.
+COMO AGENTE ES IMPORTANTE QUE RESPETES LA REGLA DE ORO Y CONSULTES TU MEMORIA NEURONAL EN CADA SESIÓN.

@@ -87,6 +87,10 @@ class LocalProcessHandler(BaseHTTPRequestHandler):
                 text = "# prompt.md no compilado aún."
             self.send_text_response(text)
 
+        elif path == "/api/export":
+            md_text = memory_engine.generate_consolidated_markdown(project_name=project_name)
+            self.send_text_response(md_text, mime_type="text/markdown; charset=utf-8")
+
         # --- RECURSOS ESTÁTICOS (WEB UI MODULAR) ---
         else:
             rel_path = path.lstrip("/")
@@ -144,7 +148,6 @@ class LocalProcessHandler(BaseHTTPRequestHandler):
         elif path == "/api/config/developer":
             for k, v in body.items():
                 memory_engine.set_config("developer_config", k, v)
-            memory_engine.export_to_markdown()
             self.send_json_response({"status": "ok"})
 
         elif path == "/api/config/project":
@@ -153,7 +156,6 @@ class LocalProcessHandler(BaseHTTPRequestHandler):
             for k, v in config_data.items():
                 if k != "project_name":
                     memory_engine.set_config("project_config", k, v, project_name=project_name)
-            memory_engine.export_to_markdown(project_name=project_name)
             self.send_json_response({"status": "ok"})
 
         elif path == "/api/learnings":
@@ -164,7 +166,6 @@ class LocalProcessHandler(BaseHTTPRequestHandler):
             importance = int(body.get("importance", 1))
             if rule:
                 memory_engine.add_learning(cat, topic, rule, importance, project_name=project_name)
-                memory_engine.export_to_markdown(project_name=project_name)
             self.send_json_response({"status": "ok"})
 
         elif path == "/api/tasks":
@@ -172,23 +173,18 @@ class LocalProcessHandler(BaseHTTPRequestHandler):
             summary = body.get("task_summary", "")
             if summary:
                 memory_engine.add_task_log(summary, project_name=project_name)
-                memory_engine.export_to_markdown(project_name=project_name)
             self.send_json_response({"status": "ok"})
 
         elif path == "/api/learnings/delete":
             learning_id = body.get("id")
-            project_name = body.get("project_name", "default")
             if learning_id:
                 memory_engine.delete_learning(int(learning_id))
-                memory_engine.export_to_markdown(project_name=project_name)
             self.send_json_response({"status": "ok"})
 
         elif path == "/api/tasks/delete":
             task_id = body.get("id")
-            project_name = body.get("project_name", "default")
             if task_id:
                 memory_engine.delete_task_log(int(task_id))
-                memory_engine.export_to_markdown(project_name=project_name)
             self.send_json_response({"status": "ok"})
 
         elif path == "/api/compile":
