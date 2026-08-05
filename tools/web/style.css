@@ -554,3 +554,22 @@ pre {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* Project Selector Dropdown */
+.project-selector-dropdown {
+  background-color: var(--bg-card);
+  border: 1px solid var(--accent-cyan);
+  color: var(--accent-cyan-bright);
+  font-family: var(--font-main);
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  outline: none;
+}
+
+.project-selector-dropdown:hover {
+  background-color: var(--bg-border);
+}
+

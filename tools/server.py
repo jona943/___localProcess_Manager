@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-server.py — Servidor Web Local & Dashboard API para localProcess_Manager (Fase 2)
+server.py — Servidor Web Local & Dashboard API Multi-Proyecto para localProcess_Manager (Fase 2)
 Servidor HTTP ligero basado en la biblioteca estándar de Python (zero dependencies externas).
 """
 
@@ -48,25 +48,36 @@ class LocalProcessHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def get_query_param(self, query_dict, key, default="default"):
+        values = query_dict.get(key, [])
+        return values[0] if values else default
+
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
+        query_params = urllib.parse.parse_qs(parsed.query)
+
+        project_name = self.get_query_param(query_params, "project", "default")
 
         # --- ROUTER API ---
-        if path == "/api/config/developer":
+        if path == "/api/projects":
+            data = memory_engine.get_projects()
+            self.send_json_response(data)
+
+        elif path == "/api/config/developer":
             data = memory_engine.get_all_config("developer_config")
             self.send_json_response(data)
 
         elif path == "/api/config/project":
-            data = memory_engine.get_all_config("project_config")
+            data = memory_engine.get_all_config("project_config", project_name=project_name)
             self.send_json_response(data)
 
         elif path == "/api/learnings":
-            data = memory_engine.get_learnings()
+            data = memory_engine.get_learnings(project_name=project_name)
             self.send_json_response(data)
 
         elif path == "/api/tasks":
-            data = memory_engine.get_task_logs()
+            data = memory_engine.get_task_logs(project_name=project_name)
             self.send_json_response(data)
 
         elif path == "/api/prompt":
@@ -112,52 +123,78 @@ class LocalProcessHandler(BaseHTTPRequestHandler):
         except Exception:
             body = {}
 
-        if path == "/api/config/developer":
+        if path == "/api/projects":
+            name = body.get("name")
+            proj_path = body.get("path", "./")
+            context_file = body.get("context_file", "README.md")
+            if name:
+                memory_engine.add_project(name, proj_path, context_file)
+                self.send_json_response({"status": "ok", "project": name})
+            else:
+                self.send_json_response({"error": "Nombre de proyecto requerido"}, status=400)
+
+        elif path == "/api/projects/delete":
+            name = body.get("name")
+            if name:
+                memory_engine.delete_project(name)
+                self.send_json_response({"status": "ok"})
+            else:
+                self.send_json_response({"error": "Nombre de proyecto requerido"}, status=400)
+
+        elif path == "/api/config/developer":
             for k, v in body.items():
                 memory_engine.set_config("developer_config", k, v)
             memory_engine.export_to_markdown()
             self.send_json_response({"status": "ok"})
 
         elif path == "/api/config/project":
-            for k, v in body.items():
-                memory_engine.set_config("project_config", k, v)
-            memory_engine.export_to_markdown()
+            project_name = body.get("project_name", "default")
+            config_data = body.get("config", body)
+            for k, v in config_data.items():
+                if k != "project_name":
+                    memory_engine.set_config("project_config", k, v, project_name=project_name)
+            memory_engine.export_to_markdown(project_name=project_name)
             self.send_json_response({"status": "ok"})
 
         elif path == "/api/learnings":
+            project_name = body.get("project_name", "default")
             cat = body.get("category", "general")
             topic = body.get("topic", "Regla")
             rule = body.get("rule", "")
             importance = int(body.get("importance", 1))
             if rule:
-                memory_engine.add_learning(cat, topic, rule, importance)
-                memory_engine.export_to_markdown()
+                memory_engine.add_learning(cat, topic, rule, importance, project_name=project_name)
+                memory_engine.export_to_markdown(project_name=project_name)
             self.send_json_response({"status": "ok"})
 
         elif path == "/api/tasks":
+            project_name = body.get("project_name", "default")
             summary = body.get("task_summary", "")
             if summary:
-                memory_engine.add_task_log(summary)
-                memory_engine.export_to_markdown()
+                memory_engine.add_task_log(summary, project_name=project_name)
+                memory_engine.export_to_markdown(project_name=project_name)
             self.send_json_response({"status": "ok"})
 
         elif path == "/api/learnings/delete":
             learning_id = body.get("id")
+            project_name = body.get("project_name", "default")
             if learning_id:
                 memory_engine.delete_learning(int(learning_id))
-                memory_engine.export_to_markdown()
+                memory_engine.export_to_markdown(project_name=project_name)
             self.send_json_response({"status": "ok"})
 
         elif path == "/api/tasks/delete":
             task_id = body.get("id")
+            project_name = body.get("project_name", "default")
             if task_id:
                 memory_engine.delete_task_log(int(task_id))
-                memory_engine.export_to_markdown()
+                memory_engine.export_to_markdown(project_name=project_name)
             self.send_json_response({"status": "ok"})
 
         elif path == "/api/compile":
+            project_name = body.get("project_name", "default")
             try:
-                compilar_prompt.compilar()
+                compilar_prompt.compilar(project_name=project_name)
                 self.send_json_response({"status": "ok"})
             except Exception as e:
                 self.send_json_response({"error": str(e)}, status=500)
@@ -175,7 +212,7 @@ def run_server(port=8000):
             HTTPServer.allow_reuse_address = True
             httpd = HTTPServer(server_address, LocalProcessHandler)
             print(f"\n=======================================================")
-            print(f"🚀 Dashboard Web localProcess_Manager Activo (Fase 2)")
+            print(f"🚀 Dashboard Web localProcess_Manager Multi-Proyecto Activo (Fase 2)")
             print(f"🌐 Abre en tu navegador: http://localhost:{try_port}")
             print(f"=======================================================\n")
             try:

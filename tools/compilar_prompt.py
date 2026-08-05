@@ -1,21 +1,24 @@
 #!/usr/bin/env python3
 """
 compilar_prompt.py — Compilador del Prompt de Sistema para localProcess_Manager
-Lee las configuraciones modulares en Markdown y genera prompt.md
+Lee las configuraciones modulares desde SQLite (memory.db) y Markdown para generar prompt.md
 """
 
 import sys
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+TOOLS_DIR = Path(__file__).resolve().parent
+BASE_DIR = TOOLS_DIR.parent
 DEV_CONFIG_PATH = BASE_DIR / "user-config" / "1.developer-config.md"
 PROJECT_CONFIG_PATH = BASE_DIR / "user-config" / "2.project-config.md"
 PROMPT_OUTPUT_PATH = BASE_DIR / "prompt.md"
 
+sys.path.append(str(TOOLS_DIR))
+import memory_engine
+
 
 def parse_markdown_table(file_path: Path) -> dict:
     if not file_path.exists():
-        print(f"Error: El archivo {file_path} no existe.", file=sys.stderr)
         return {}
 
     content = file_path.read_text(encoding="utf-8")
@@ -25,9 +28,7 @@ def parse_markdown_table(file_path: Path) -> dict:
         trimmed = line.strip()
         if trimmed.startswith("|") and trimmed.endswith("|"):
             raw_cells = trimmed.split("|")
-            cells = [
-                c.strip() for c in raw_cells[1:-1]
-            ]
+            cells = [c.strip() for c in raw_cells[1:-1]]
             if len(cells) < 2:
                 continue
 
@@ -44,11 +45,18 @@ def parse_markdown_table(file_path: Path) -> dict:
     return config
 
 
-def compilar():
-    print("--- Iniciando Compilación del Prompt (localProcess_Manager - Python) ---")
+def compilar(project_name: str = "default"):
+    print(f"--- Iniciando Compilación del Prompt (Proyecto: {project_name}) ---")
 
-    dev_config = parse_markdown_table(DEV_CONFIG_PATH)
-    project_config = parse_markdown_table(PROJECT_CONFIG_PATH)
+    # Intentar obtener configuración directa de SQLite memory_engine
+    dev_config = memory_engine.get_all_config("developer_config")
+    project_config = memory_engine.get_all_config("project_config", project_name=project_name)
+
+    # Fallback a archivos Markdown si la BD no retorna datos
+    if not dev_config:
+        dev_config = parse_markdown_table(DEV_CONFIG_PATH)
+    if not project_config:
+        project_config = parse_markdown_table(PROJECT_CONFIG_PATH)
 
     # Valores por defecto
     dev_name = dev_config.get("Nombre del Programador", "Desarrollador")
@@ -59,43 +67,43 @@ def compilar():
     )
     lang = dev_config.get("Idioma Principal", "Español")
     tech_term = dev_config.get(
-        "Terminología Técnica", "Combinar spanglish y conceptos técnicos en inglés"
+        "Terminología Técnica", "Spanglish técnico estándar"
     )
     didactics = dev_config.get(
         "Nivel de Didáctica",
         "Alto (Explicar paso a paso sin modificar código directamente)",
     )
     comments = dev_config.get(
-        "Comentarios en Código", "Lenguaje sencillo e instructivo"
+        "Comentarios en Código", "Instructivos y sencillos"
     )
     feedback_freq = dev_config.get(
         "Frecuencia de Feedback",
-        "Ocasional (Preguntar al usuario qué se le dificulta al final de tareas complejas)",
+        "Ocasional",
     )
 
-    proj_name = project_config.get("Nombre del Proyecto", "LocalDrop")
-    proj_dir = project_config.get("Directorio del Proyecto", "../LocalDrop")
-    context_file = project_config.get("Archivo de Contexto", "LocalDrop-Contexto.md")
+    proj_name = project_config.get("Nombre del Proyecto", project_name)
+    proj_dir = project_config.get("Directorio del Proyecto", "./")
+    context_file = project_config.get("Archivo de Contexto", "README.md")
     tech_stack = project_config.get(
-        "Tecnologías Principales", "Node.js, JavaScript, HTML5, Python"
+        "Tecnologías Principales", "Python 3, SQLite, MCP"
     )
     js_modules = project_config.get(
         "Módulos de JavaScript", "ES Modules (import / export)"
     )
     css_styles = project_config.get(
-        "Estilos (CSS)", "Vanilla CSS (Mover estilos inline a archivos externos)"
+        "Estilos (CSS)", "Vanilla CSS (Dark Mode IDE)"
     )
     async_style = project_config.get(
         "Manejo de Asincronía",
-        "Asíncrono puro (fs/promises, async/await, no blocking loops)",
+        "Asyncio / Native SQLite",
     )
     architecture = project_config.get(
-        "Arquitectura de Código", "Modular src/ (routes, controllers, services)"
+        "Arquitectura de Código", "Dual-Drive (SQLite + MCP + UI)"
     )
 
     system_prompt_template = f"""{{ PROMPT-GUIA }}
 * REGLA DE ORO DE APRENDIZAJE: El agente NUNCA debe autocompletar, modificar o crear archivos de código del proyecto directamente sin petición explícita. Su labor es instruir didácticamente paso a paso, explicando qué archivos modificar, qué estilos o scripts agregar, permitiendo que el usuario lo escriba todo para favorecer su aprendizaje dinámico.
-* REGLA DE INICIALIZACIÓN: El agente NUNCA debe leer o ejecutar de forma autónoma el archivo `___ignore-prompt.md`. Este archivo es de un solo uso, únicamente demostrativo, y sirve para que el usuario inicie manualmente la configuración del entorno mediante copiar y pegar. El agente no debe procesar ni acceder a este archivo por cuenta propia.
+* REGLA DE INICIALIZACIÓN: El agente NUNCA debe leer o ejecutar de forma autónoma el archivo `___ignore-prompt.md`. Este archivo es de un solo uso, únicamente demostrativo, y sirve para que el usuario inicie manualmente la configuración del entorno mediante copiar y pagar. El agente no debe procesar ni acceder a este archivo por cuenta propia.
 
 Revisa el contexto del repositorio `{proj_name}/` en la ruta `{proj_dir}`, el usuario colocó el archivo de contexto técnico en `localProcess_Manager/{context_file}`.
 

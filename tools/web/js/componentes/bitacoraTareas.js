@@ -1,17 +1,19 @@
-// componentes/bitacoraTareas.js — Bitácora de Tareas e Interacciones
+// componentes/bitacoraTareas.js — Bitácora de Tareas e Interacciones Multi-Proyecto
 
 import { escapeHtml, showToast } from '../utils.js';
+import { getProyectoActivo } from './selectorProyectos.js';
 
 export async function cargarTareas() {
+  const proyectoActual = getProyectoActivo();
   try {
-    const respuesta = await fetch('/api/tasks');
+    const respuesta = await fetch(`/api/tasks?project=${encodeURIComponent(proyectoActual)}`);
     const lista = await respuesta.json();
     const contenedor = document.getElementById('tasks-container');
     if (!contenedor) return;
     contenedor.innerHTML = '';
 
     if (lista.length === 0) {
-      contenedor.innerHTML = '<p class="text-muted">Bitácora vacía.</p>';
+      contenedor.innerHTML = `<p class="text-muted">Bitácora vacía para el proyecto '${escapeHtml(proyectoActual)}'.</p>`;
       return;
     }
 
@@ -37,6 +39,7 @@ export function establecerPlantillaTarea(texto) {
 }
 
 export async function agregarLogTarea() {
+  const proyectoActual = getProyectoActivo();
   const entrada = document.getElementById('task-input');
   if (!entrada) return;
   const resumen = entrada.value.trim();
@@ -50,10 +53,10 @@ export async function agregarLogTarea() {
     const respuesta = await fetch('/api/tasks', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ task_summary: resumen })
+      body: JSON.stringify({ project_name: proyectoActual, task_summary: resumen })
     });
     if (respuesta.ok) {
-      showToast('Entrada agregada a la bitácora');
+      showToast(`Entrada agregada a la bitácora de '${proyectoActual}'`);
       entrada.value = '';
       cargarTareas();
     }
@@ -63,12 +66,13 @@ export async function agregarLogTarea() {
 }
 
 export async function eliminarLogTarea(id) {
+  const proyectoActual = getProyectoActivo();
   if (!confirm('¿Deseas eliminar este registro de la bitácora?')) return;
   try {
     const respuesta = await fetch('/api/tasks/delete', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id })
+      body: JSON.stringify({ id, project_name: proyectoActual })
     });
     if (respuesta.ok) {
       showToast('Entrada eliminada de la bitácora');

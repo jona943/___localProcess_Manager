@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>localProcess_Manager — Dashboard de Configuración</title>
+  <title>localProcess_Manager — Dashboard Multi-Proyecto</title>
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +20,7 @@
         </div>
         <div class="brand-text">
           <h2>localProcess</h2>
-          <span class="badge">v2.0 Dual-Drive</span>
+          <span class="badge">v2.0 Multi-Project</span>
         </div>
       </div>
 
@@ -62,9 +62,15 @@
           <h1 id="page-title">Configuración del Desarrollador</h1>
           <p id="page-subtitle">Personalidad del agente, idioma y preferencias de didáctica</p>
         </div>
-        <div class="status-indicator">
-          <span class="status-dot"></span>
-          <span class="status-text">SQLite Dual-Drive Activo</span>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <select id="seleccion-proyecto-activo" class="project-selector-dropdown">
+            <option value="default">📁 Proyecto: default</option>
+          </select>
+          <button id="btn-nuevo-proyecto" class="btn-chip" style="background: var(--accent); color: white; border: none; font-weight: 600; padding: 0.4rem 0.8rem;">+ Nuevo Proyecto</button>
+          <div class="status-indicator">
+            <span class="status-dot"></span>
+            <span class="status-text">Dual-Drive Multi-Project</span>
+          </div>
         </div>
       </header>
 
